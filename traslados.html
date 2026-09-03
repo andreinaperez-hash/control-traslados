@@ -172,7 +172,7 @@ footer{border-top:1px solid var(--gris-200);padding:18px 0;color:var(--gris-500)
 <section class="tab active" id="tab-cargar">
   <div class="card">
     <h3><span class="htitle">Cargar archivos del proveedor</span></h3>
-    <p class="muted">Sube el/los <b>.xlsx tal cual los envía el proveedor</b>. Lee solo las hojas de traslados (CENDIS, TRANSPORTE, VARIOS y por pasajero), ignora las plantillas y detecta archivos repetidos. El análisis corre en tu equipo.</p>
+    <p class="muted">Sube el/los <b>.xlsx tal cual los envía el proveedor</b>. Reconoce el formato de <b>ambos proveedores</b> automáticamente (con o sin columna PROVEEDOR, "ORIGEN" o "PUNTO DE SALIDA"), ignora plantillas y hojas consolidadas repetidas, y detecta archivos repetidos. Si un archivo no trae el nombre del proveedor, lo toma del nombre del archivo y puedes corregirlo en el campo <b>Proveedor</b>. El análisis corre en tu equipo.</p>
     <div class="drop" id="drop">
       <div class="big">📄 Arrastra aquí los archivos o haz clic para elegir</div>
       <div class="muted">Formato .xlsx · puedes cargar los dos proveedores a la vez</div>
@@ -394,38 +394,55 @@ function handleFiles(fl){
     rd.onload=ev=>{
       try{const wb=XLSX.read(new Uint8Array(ev.target.result),{type:'array',cellDates:true});
         const rows=parseWorkbook(wb,f.name);const s=f.name+'|'+f.size+'|'+rows.length;
-        FILES.push({name:f.name,size:f.size,sig:s,rows,dupe:FILES.some(x=>x.sig===s),count:rows.length});
+        FILES.push({name:f.name,size:f.size,sig:s,rows,dupe:FILES.some(x=>x.sig===s),count:rows.length,prov:modeProv(rows)});
       }catch(err){FILES.push({name:f.name,size:f.size,sig:'err',rows:[],error:String(err.message||err),count:0});}
       if(--pending===0){renderFiles();processAll();}
     };rd.readAsArrayBuffer(f);});
 }
+function providerFromName(fname){
+  const s=(fname||'').replace(/\.[^.]+$/,'');
+  const m=s.match(/[A-Za-zÁÉÍÓÚÑ][A-Za-zÁÉÍÓÚÑ&.\-]*/);
+  return m?m[0].toUpperCase():'PROVEEDOR';
+}
+function modeProv(rows){const m={};rows.forEach(r=>{m[r.proveedor]=(m[r.proveedor]||0)+1;});const e=Object.entries(m).sort((a,b)=>b[1]-a[1])[0];return e?e[0]:'PROVEEDOR';}
+// Lee las hojas de traslados de CUALQUIER proveedor. Detecta el encabezado por CHOFER+FECHA
+// (no exige PROVEEDOR), mapea columnas por nombre con alias (ORIGEN=SALIDA, etc.), deriva el
+// proveedor de la columna si existe o del nombre del archivo, y descarta hojas que repiten datos.
 function parseWorkbook(wb,fname){
-  const out=[];
+  const out=[],seen={},defProv=providerFromName(fname);
   wb.SheetNames.forEach(sn=>{
     const grid=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:true,defval:null});
     let hr=-1;
-    for(let i=0;i<Math.min(grid.length,12);i++){const c=(grid[i]||[]).map(norm);if(c.includes('PROVEEDOR')&&c.includes('CHOFER')&&c.includes('FECHA')){hr=i;break;}}
+    for(let i=0;i<Math.min(grid.length,15);i++){const c=(grid[i]||[]).map(norm);
+      if(c.includes('CHOFER')&&c.includes('FECHA')&&(c.some(x=>x.indexOf('COSTO')>=0)||c.some(x=>x.indexOf('PASAJERO')>=0))){hr=i;break;}}
     if(hr<0)return;
     const head=(grid[hr]||[]).map(norm);
-    const find=(...names)=>{for(const n of names){const k=head.indexOf(n);if(k>=0)return k;}return -1;};
-    const cP=find('PROVEEDOR'),cC=find('CHOFER'),cF=find('FECHA'),cH=find('HORA'),cS=find('PUNTO DE SALIDA','SALIDA');
+    const find=(...names)=>{for(const n of names){const k=head.indexOf(n);if(k>=0)return k;}for(const n of names){for(let k=0;k<head.length;k++){if(head[k].indexOf(n)>=0)return k;}}return -1;};
+    const cP=find('PROVEEDOR'),cC=find('CHOFER'),cF=find('FECHA'),cH=find('HORA'),cS=find('PUNTO DE SALIDA','SALIDA','ORIGEN');
     let cD=find('DESTINO');if(cD<0)cD=cS+1;
     const cPas=find('PASAJERO 1','PASAJERO  1','PASAJERO'),cAc=find('ACOMPAÑANTES','ACOMPANANTES'),cCost=find('COSTO TOTAL','COSTO'),cArea=find('AREA','ÁREA'),cTar=find('TARIFA BASE $','TARIFA BASE');
-    for(let r=hr+1;r<grid.length;r++){const row=grid[r]||[];const prov=row[cP],fecha=row[cF];
-      if(prov==null||String(prov).trim()===''||fecha==null)continue;
-      out.push({proveedor:String(prov).trim(),chofer:cC>=0&&row[cC]!=null?String(row[cC]).trim():'',fecha:toDate(fecha),hora:toTime(cH>=0?row[cH]:null),
+    for(let r=hr+1;r<grid.length;r++){const row=grid[r]||[];const chof=cC>=0?row[cC]:null,fecha=cF>=0?row[cF]:null;
+      if(chof==null||String(chof).trim()===''||fecha==null)continue;
+      const prov=(cP>=0&&row[cP]!=null&&String(row[cP]).trim()!=='')?String(row[cP]).trim():defProv;
+      const rec={proveedor:prov,chofer:String(chof).trim(),fecha:toDate(fecha),hora:toTime(cH>=0?row[cH]:null),
         salida:cS>=0&&row[cS]!=null?String(row[cS]).trim():'',destino:cD>=0&&row[cD]!=null?String(row[cD]).trim():'',
         pasajero:cPas>=0&&row[cPas]!=null?String(row[cPas]).trim():'',acomp:cAc>=0&&row[cAc]!=null?String(row[cAc]).trim():'',
-        costo:num(cCost>=0?row[cCost]:(cTar>=0?row[cTar]:0)),area:cArea>=0&&row[cArea]!=null?String(row[cArea]).trim():sn,hoja:sn,archivo:fname});}
+        costo:num(cCost>=0?row[cCost]:(cTar>=0?row[cTar]:0)),area:cArea>=0&&row[cArea]!=null?String(row[cArea]).trim():sn,hoja:sn,archivo:fname};
+      const s=sig(rec);
+      if(seen[s]!==undefined&&seen[s]!==sn)continue; // mismo servicio repetido en otra hoja del mismo archivo (hoja consolidada)
+      seen[s]=sn;out.push(rec);
+    }
   });
   return out;
 }
 function renderFiles(){
   const c=$('#filelist');c.innerHTML='';
   FILES.forEach((f,i)=>{const div=document.createElement('div');div.className='fileitem'+(f.dupe?' dupe':'');
-    div.innerHTML=`<span class="nm">${f.name}</span><span class="meta">${(f.size/1024).toFixed(0)} KB · ${f.count} servicios</span>${f.error?`<span class="pill dupe">error</span>`:f.dupe?`<span class="pill dupe">⚠ archivo repetido</span>`:`<span class="pill ok">✓ cargado</span>`}<span class="rmx" data-i="${i}">✕</span>`;
+    const provField=(f.error||f.count===0)?'':`<label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--gris-600);font-weight:600;margin:0">Proveedor:<input class="provinp" data-i="${i}" value="${(f.prov||'').replace(/"/g,'&quot;')}" title="Puedes corregir el nombre del proveedor" style="padding:4px 8px;font-size:12.5px;width:130px;border:1px solid var(--gris-300);border-radius:6px"></label>`;
+    div.innerHTML=`<span class="nm">${f.name}</span>${provField}<span class="meta">${(f.size/1024).toFixed(0)} KB · ${f.count} servicios</span>${f.error?`<span class="pill dupe">error</span>`:f.dupe?`<span class="pill dupe">⚠ archivo repetido</span>`:f.count===0?`<span class="pill dupe">0 servicios — revisar formato</span>`:`<span class="pill ok">✓ cargado</span>`}<span class="rmx" data-i="${i}">✕</span>`;
     c.appendChild(div);});
   $$('.rmx',c).forEach(x=>x.addEventListener('click',()=>{FILES.splice(+x.dataset.i,1);renderFiles();processAll();}));
+  $$('.provinp',c).forEach(x=>x.addEventListener('change',()=>{const i=+x.dataset.i;const nv=x.value.trim()||'PROVEEDOR';FILES[i].prov=nv;FILES[i].rows.forEach(r=>r.proveedor=nv);processAll();}));
   $('#btnClear').disabled=!FILES.length;$('#btnSaveHist').disabled=!ROWS.length;
   const d=FILES.filter(f=>f.dupe).length;
   $('#loadmsg').textContent=FILES.length?`${FILES.length} archivo(s) · ${d?d+' repetido(s)':'sin repetidos'}`:'';
