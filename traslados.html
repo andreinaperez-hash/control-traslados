@@ -211,6 +211,8 @@ footer{border-top:1px solid var(--gris-200);padding:18px 0;color:var(--gris-500)
         <label class="fld">Proveedor<select id="fProv"><option value="">Todos</option></select></label>
         <label class="fld">Área<select id="fArea"><option value="">Todas</option></select></label>
         <label class="fld">Duplicados<select id="fDedup"><option value="1">Excluir (recomendado)</option><option value="0">Incluir</option></select></label>
+        <div class="spacer" style="flex:1"></div>
+        <button class="btn ghost sm" id="btnDashRefresh" title="Traer lo último del histórico compartido">🔄 Actualizar</button>
       </div>
     </div>
     <div class="kpis" style="margin-bottom:18px">
@@ -260,6 +262,7 @@ footer{border-top:1px solid var(--gris-200);padding:18px 0;color:var(--gris-500)
         <label class="fld">Año<select id="hAnio"><option value="">Todos</option></select></label>
         <label class="fld">Proveedor<select id="hProv"><option value="">Todos</option></select></label>
         <div class="spacer" style="flex:1"></div>
+        <button class="btn ghost sm" id="btnHistRefresh" title="Traer lo último del histórico compartido">🔄 Actualizar</button>
         <button class="btn ghost sm" id="btnExpHist">⬇ Exportar histórico (CSV)</button>
       </div>
     </div>
@@ -696,13 +699,27 @@ window.appFbReady=async function(){
     if(typeof window.fbListen==='function'){window.fbListen(HCOL,'_index',async idx=>{await loadHistory();});}
   }catch(e){console.warn('fb init',e);}
 };
+let _lastHL=0,_hlBusy=false;
 async function loadHistory(){
   if(typeof window.fbLoad!=='function')return;
   const idx=await window.fbLoad(HCOL,'_index');const meses=(idx&&idx.meses)||[];
   const all=[];
   for(const mk of meses){const arr=await window.fbLoad(HCOL,mk);if(Array.isArray(arr))arr.forEach(r=>all.push(r));}
-  HIST=all;rebuildAll();
+  HIST=all;_lastHL=Date.now();rebuildAll();
+  const txt=document.getElementById('fb-txt');if(txt)txt.textContent='☁ En línea · '+new Date().toLocaleTimeString('es-VE',{hour:'2-digit',minute:'2-digit'});
 }
+async function refreshHist(force){
+  if(typeof window.fbLoad!=='function')return;
+  if(_hlBusy)return; if(!force && Date.now()-_lastHL<2500)return;
+  _hlBusy=true;try{await loadHistory();}catch(e){console.warn('refreshHist',e);}_hlBusy=false;
+}
+// Recarga automática al volver a enfocar/abrir la pestaña (clave en móvil, que congela pestañas en 2º plano)
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshHist();});
+window.addEventListener('focus',()=>refreshHist());
+document.addEventListener('DOMContentLoaded',()=>{
+  const a=document.getElementById('btnHistRefresh');if(a)a.addEventListener('click',()=>refreshHist(true));
+  const b=document.getElementById('btnDashRefresh');if(b)b.addEventListener('click',()=>refreshHist(true));
+});
 $('#btnSaveHist').addEventListener('click',async()=>{
   if(!ROWS.length)return;
   if(typeof window.fbSave!=='function'){alert('Sin conexión a la base de datos compartida. Intenta de nuevo en unos segundos.');return;}
