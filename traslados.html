@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Control de Traslados · Farmatodo</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNDAuMjU4IDE0MC4yNTgiIHdpZHRoPSIxNDAuMjU4IiBoZWlnaHQ9IjE0MC4yNTgiIHJvbGU9ImltZyIgYXJpYS1sYWJlbD0iRmFybWF0b2RvIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg5LjU3Miw3LjUxNCkiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yNzQuOTE0LC0yMTIuNTMxKSI+PHBhdGggZmlsbD0iIzAwMUU2MiIgZD0iTSAyNzQuOTE0IDIxMi41MzEgTCAzOTYuMDI3IDIxMi41MzEgTCAzOTYuMDI3IDMzNy43NjIgTCAyNzQuOTE0IDMzNy43NjIgWiIvPjxwYXRoIGZpbGw9IiNGRkZGRkYiIGQ9Ik0gMzU1LjcyMyAzMzQuNDggQyAzNTcuMTk5IDMyOS4xMzMgMzU4LjAwOCAzMjMuNTIzIDM1OC4wMDggMzE3LjcxOSBDIDM1OC4wMDggMjgyLjg5OCAzMjkuODA1IDI1NC42NzYgMjk0Ljk2NSAyNTQuNjc2IEMgMjg5LjE0OCAyNTQuNjc2IDI4My41MDggMjU1LjQ5NiAyNzguMTQ1IDI1Ni45NzMgTCAyNzguMTQ1IDMzNC40OCBaIE0gMzM1LjU1NSAzMjAuNjkxIEMgMzMwLjA5NCAzMjcuMTA5IDMxOS45MjIgMzI4LjU1OSAzMTMuNDg4IDMyMy4xMDkgQyAzMDcuMTAyIDMxNy42NjQgMzA2LjMyOCAzMDguMDU1IDMxMS43NTQgMzAxLjYzNyBDIDMxOC4wMzUgMjk0LjI0MiAzNDIuNTg2IDI4My4yODEgMzQyLjg0NCAyODMuMzA5IEMgMzQzLjI5MyAyODMuMzU1IDM0MS40MDIgMzEzLjc4OSAzMzUuNTU1IDMyMC42OTEgTSAzMDkuNzE1IDI2MS4zNCBDIDMxOS40NTcgMjYzLjE2OCAzNDEuNzM0IDI3OS4zOTggMzQxLjg0NCAyNzkuNjYgQyAzNDIuMDQ3IDI4MC4wNTUgMzE0LjAwOCAyOTMuOTA2IDMwNC44ODMgMjkyLjIxNSBDIDI5Ni40MTQgMjkwLjYyMSAyODkuOTM0IDI4Mi4yOTcgMjkxLjUwNCAyNzMuODM2IEMgMjkzLjA4NiAyNjUuMzQ0IDMwMS4yNDYgMjU5Ljc3MyAzMDkuNzE1IDI2MS4zNCAiLz48cGF0aCBmaWxsPSIjRkZGRkZGIiBkPSJNIDM0OC40NjEgMjcxLjgwNSBDIDM0OC42MjkgMjcxLjU3OCAzNDkuODQgMjQzLjUwNCAzNDYuMDI3IDIzNC4wOSBDIDM0Mi43MzggMjI1LjkzIDMzMy40MzggMjIxLjk2MSAzMjUuMjcgMjI1LjI4MSBDIDMxNy4wOSAyMjguNTgyIDMxMy40ODggMjM4LjczNCAzMTYuNzkzIDI0Ni45MTQgQyAzMjAuMzQ4IDI1NS43MDcgMzQ4LjIyMyAyNzIuMjExIDM0OC40NjEgMjcxLjgwNSAiLz48cGF0aCBmaWxsPSIjRkZGRkZGIiBkPSJNIDM3Ni40NjkgMjI1LjI4MSBDIDM2OC4yOTcgMjIxLjk2MSAzNTkuMDA0IDIyNS45MyAzNTUuNzE5IDIzNC4wOSBDIDM1MS44ODcgMjQzLjUwNCAzNTMuMTA1IDI3MS41NzggMzUzLjI4NSAyNzEuODA1IEMgMzUzLjUyMyAyNzIuMjE1IDM4MS4zOTEgMjU1LjcwNyAzODQuOTQxIDI0Ni45MTQgQyAzODguMjUgMjM4LjczIDM4NC42NDggMjI4LjU4NiAzNzYuNDY5IDIyNS4yODEgIi8+PC9nPjwvZz48L3N2Zz4=">
+<style>
+:root{
+  --azul-1:#001E62; --azul-2:#418FDE;
+  --azul-2-100:#E7F1FC; --azul-2-200:#C7DEF7; --azul-2-700:#1F6BB8;
+  --gris-50:#F7F9FC; --gris-100:#F2F5F9; --gris-200:#E5E9F0; --gris-300:#C9D1DE;
+  --gris-400:#9AA6B8; --gris-500:#647188; --gris-600:#4A566B; --gris-700:#2E3950; --gris-800:#1A2333;
+  --ok:#00A499; --alerta:#A8AD00; --riesgo:#C8102E; --info:#418FDE;
+  --font:"Helvetica Neue",Helvetica,Arial,"Liberation Sans",sans-serif;
+  --radio:10px; --radio-sm:6px;
+  --sombra:0 1px 2px rgba(0,30,98,.06),0 6px 20px rgba(0,30,98,.07);
+  --serie-1:#001E62; --serie-2:#418FDE; --serie-3:#00A499; --serie-4:#470A68;
+  --serie-5:#A8AD00; --serie-6:#6BA8E6; --serie-7:#221C35; --serie-8:#9BC4EF;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;font-family:var(--font);font-size:15px;line-height:1.5;color:var(--gris-800);background:var(--gris-50)}
+h1,h2,h3,h4{color:var(--azul-1);font-weight:700;margin:0 0 .4em;letter-spacing:-.01em}
+h2{font-size:22px} h3{font-size:17px}
+a{color:var(--azul-2-700)}
+.wrap{max-width:1320px;margin:0 auto;padding:0 18px}
+
+/* Header */
+header.top{background:var(--azul-1);color:#fff;padding:16px 0}
+header.top .wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+header.top .logo{height:38px;display:flex;align-items:center}
+header.top .logo svg{height:38px;width:auto}
+header.top .titles{line-height:1.15}
+header.top .titles .t1{font-size:19px;font-weight:700}
+header.top .titles .t2{font-size:12.5px;color:var(--azul-2-200);letter-spacing:.04em}
+header.top .spacer{flex:1}
+header.top .period{font-size:12.5px;color:var(--azul-2-200);text-align:right}
+header.top .period b{color:#fff;display:block;font-size:14px}
+
+/* Tabs */
+nav.tabs{background:#fff;border-bottom:1px solid var(--gris-200);position:sticky;top:0;z-index:50;box-shadow:0 1px 6px rgba(0,30,98,.04)}
+nav.tabs .wrap{display:flex;gap:4px;overflow-x:auto}
+nav.tabs button{appearance:none;border:0;background:none;font-family:inherit;font-size:14.5px;font-weight:600;
+  color:var(--gris-500);padding:14px 16px;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+nav.tabs button:hover{color:var(--azul-1)}
+nav.tabs button.active{color:var(--azul-1);border-bottom-color:var(--azul-2)}
+nav.tabs button .badge{display:inline-block;min-width:18px;padding:1px 6px;margin-left:6px;border-radius:20px;
+  background:var(--riesgo);color:#fff;font-size:11px;font-weight:700;vertical-align:middle}
+nav.tabs button .badge.warn{background:var(--alerta)}
+nav.tabs button .badge.zero{background:var(--gris-300);color:var(--gris-700)}
+
+main{padding:22px 0 60px}
+section.tab{display:none} section.tab.active{display:block}
+
+.card{background:#fff;border:1px solid var(--gris-200);border-radius:var(--radio);box-shadow:var(--sombra);padding:18px;margin-bottom:18px}
+.card h3{border-bottom:2px solid var(--azul-1);padding-bottom:8px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.muted{color:var(--gris-500);font-size:13.5px}
+.eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--azul-2-700);font-weight:700;margin:0 0 6px}
+
+/* Botones */
+.btn{appearance:none;border:1px solid var(--azul-1);background:var(--azul-1);color:#fff;font-family:inherit;
+  font-size:14px;font-weight:600;padding:9px 16px;border-radius:var(--radio-sm);cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.btn:hover{background:#00174C}
+.btn.ghost{background:#fff;color:var(--azul-1)}
+.btn.ghost:hover{background:var(--azul-2-100)}
+.btn.sm{padding:6px 11px;font-size:13px}
+.btn.danger{border-color:var(--riesgo);background:var(--riesgo)} .btn.danger:hover{filter:brightness(.92)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* Dropzone */
+.drop{border:2px dashed var(--gris-300);border-radius:var(--radio);padding:34px 18px;text-align:center;
+  background:var(--gris-50);cursor:pointer;transition:.15s}
+.drop:hover,.drop.over{border-color:var(--azul-2);background:var(--azul-2-100)}
+.drop .big{font-size:16px;font-weight:700;color:var(--azul-1);margin-bottom:4px}
+.drop input{display:none}
+
+.filelist{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.fileitem{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--gris-200);border-radius:var(--radio-sm);background:#fff;font-size:13.5px}
+.fileitem .nm{font-weight:600;color:var(--gris-800);flex:1;word-break:break-all}
+.fileitem .meta{color:var(--gris-500);font-size:12px}
+.fileitem.dupe{border-color:var(--riesgo);background:rgba(200,16,46,.06)}
+.pill{font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px}
+.pill.ok{background:rgba(0,164,153,.14);color:var(--ok)} .pill.dupe{background:rgba(200,16,46,.12);color:var(--riesgo)}
+.rmx{cursor:pointer;color:var(--gris-400);font-weight:700;font-size:17px;line-height:1;padding:2px 6px}
+.rmx:hover{color:var(--riesgo)}
+
+/* KPIs */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.kpi{background:#fff;border:1px solid var(--gris-200);border-radius:var(--radio);padding:14px 16px;box-shadow:var(--sombra)}
+.kpi .lbl{font-size:12px;color:var(--gris-500);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.kpi .val{font-size:30px;font-weight:800;color:var(--azul-1);line-height:1.1;margin-top:4px}
+.kpi.riesgo .val{color:var(--riesgo)} .kpi.alerta .val{color:var(--alerta)} .kpi.ok .val{color:var(--ok)}
+.kpi .sub{font-size:12px;color:var(--gris-500);margin-top:2px}
+
+/* Tablas */
+.tablewrap{overflow-x:auto;border:1px solid var(--gris-200);border-radius:var(--radio-sm)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--gris-200);white-space:nowrap}
+th{background:var(--azul-1);color:#fff;font-weight:600;position:sticky;top:0;font-size:12.5px}
+tbody tr:nth-child(even){background:var(--gris-100)}
+tbody tr:hover{background:var(--azul-2-100)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tr.rojo td{background:rgba(200,16,46,.07) !important} tr.rojo td:first-child{box-shadow:inset 4px 0 0 var(--riesgo)}
+tr.amarillo td{background:rgba(168,173,0,.10) !important} tr.amarillo td:first-child{box-shadow:inset 4px 0 0 var(--alerta)}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px}
+.tag.r{background:var(--riesgo);color:#fff} .tag.a{background:var(--alerta);color:#fff}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.chartbox{position:relative;height:280px}
+.chartbox.tall{height:360px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+select,input[type=text],input[type=date],input[type=number]{font-family:inherit;font-size:14px;padding:8px 10px;
+  border:1px solid var(--gris-300);border-radius:var(--radio-sm);background:#fff;color:var(--gris-800)}
+label.fld{font-size:12px;font-weight:600;color:var(--gris-600);display:flex;flex-direction:column;gap:4px}
+.empty{padding:40px;text-align:center;color:var(--gris-400)}
+.legendnote{font-size:12px;color:var(--gris-500);margin-top:8px;display:flex;gap:16px;flex-wrap:wrap}
+.legendnote span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+
+/* Checklist */
+.frm{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.chk-item{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--gris-200)}
+.chk-item .nm{font-weight:600}
+.chk-item .obs{grid-column:1/-1;margin-top:6px}
+.chk-item .obs input{width:100%}
+.opts{display:flex;gap:4px;flex-wrap:wrap}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0;width:0;height:0}
+.opt label{display:inline-block;font-size:12.5px;font-weight:700;padding:6px 11px;border:1.5px solid var(--gris-300);
+  border-radius:20px;cursor:pointer;color:var(--gris-500);user-select:none}
+.opt.bien input:checked+label{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt.regular input:checked+label{background:var(--alerta);border-color:var(--alerta);color:#fff}
+.opt.malo input:checked+label{background:var(--riesgo);border-color:var(--riesgo);color:#fff}
+.opt.na input:checked+label{background:var(--gris-400);border-color:var(--gris-400);color:#fff}
+.sigrow{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+.sigpad{border:1px solid var(--gris-300);border-radius:var(--radio-sm);background:#fff}
+.sigbox{border:1.5px dashed var(--gris-300);border-radius:var(--radio-sm);background:var(--gris-50);touch-action:none;width:100%;height:130px;display:block}
+.sigcap{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.res-banner{padding:12px 16px;border-radius:var(--radio-sm);font-weight:700;margin:10px 0;display:none}
+.res-banner.ok{background:rgba(0,164,153,.12);color:var(--ok);border:1px solid rgba(0,164,153,.42);display:block}
+.res-banner.obs{background:rgba(168,173,0,.14);color:var(--azul-1);border:1px solid rgba(168,173,0,.5);display:block}
+.res-banner.rechazo{background:rgba(200,16,46,.09);color:var(--riesgo);border:1px solid rgba(200,16,46,.35);display:block}
+
+footer{border-top:1px solid var(--gris-200);padding:18px 0;color:var(--gris-500);font-size:12.5px;text-align:center}
+
+@media(max-width:820px){
+  .grid2,.grid3{grid-template-columns:1fr}
+  .sigrow{grid-template-columns:1fr}
+  header.top .period{text-align:left}
+}
+@media print{
+  nav.tabs,header.top .period,.noprint{display:none!important}
+  section.tab{display:none!important} section.tab.printme{display:block!important}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <span class="logo" aria-label="Farmatodo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 651.086 127.269" role="img" aria-label="Farmatodo"><g transform="translate(-274.914,-212.531)"><path fill="#FFFFFF" fill-rule="evenodd" d="M 274.914 212.531 L 396.027 212.531 L 396.027 337.762 L 274.914 337.762 Z M 278.156 215.773 L 392.785 215.773 L 392.785 334.52 L 278.156 334.52 Z"/><path fill="#FFFFFF" d="M 355.723 334.48 C 357.199 329.133 358.008 323.523 358.008 317.719 C 358.008 282.898 329.805 254.676 294.965 254.676 C 289.148 254.676 283.508 255.496 278.145 256.973 L 278.145 334.48 Z M 335.555 320.691 C 330.094 327.109 319.922 328.559 313.488 323.109 C 307.102 317.664 306.328 308.055 311.754 301.637 C 318.035 294.242 342.586 283.281 342.844 283.309 C 343.293 283.355 341.402 313.789 335.555 320.691 M 309.715 261.34 C 319.457 263.168 341.734 279.398 341.844 279.66 C 342.047 280.055 314.008 293.906 304.883 292.215 C 296.414 290.621 289.934 282.297 291.504 273.836 C 293.086 265.344 301.246 259.773 309.715 261.34 "/><path fill="#FFFFFF" d="M 348.461 271.805 C 348.629 271.578 349.84 243.504 346.027 234.09 C 342.738 225.93 333.438 221.961 325.27 225.281 C 317.09 228.582 313.488 238.734 316.793 246.914 C 320.348 255.707 348.223 272.211 348.461 271.805 "/><path fill="#FFFFFF" d="M 376.469 225.281 C 368.297 221.961 359.004 225.93 355.719 234.09 C 351.887 243.504 353.105 271.578 353.285 271.805 C 353.523 272.215 381.391 255.707 384.941 246.914 C 388.25 238.73 384.648 228.586 376.469 225.281 "/><path fill="#FFFFFF" d="M 544.539 277.754 C 538.586 275.535 534.387 275.535 526.348 275.535 L 511.953 275.535 L 511.953 337.762 L 526.348 337.762 L 526.348 321.148 L 534.957 321.148 C 540.648 321.148 543.715 326.199 543.715 330.926 L 543.715 337.762 L 557.562 337.762 L 557.562 328.605 C 557.562 320.309 555.34 317.59 552.098 315.051 C 554.715 312.105 558.297 307.809 558.297 296.762 C 558.297 287.57 553.023 280.906 544.539 277.754 M 533.285 308.441 L 526.348 308.441 L 526.348 289.582 C 527.828 289.605 529.863 289.617 532.652 289.617 C 540.547 289.617 543.906 294.359 543.906 298.988 C 543.906 304.957 539.688 308.441 533.285 308.441 M 407.75 337.762 L 423.062 337.762 L 423.062 314.988 L 446.871 314.988 L 446.871 300.648 L 423.062 300.648 L 423.062 290.203 L 453.684 290.203 L 453.684 275.535 L 407.75 275.535 Z M 455.648 307.445 L 455.648 337.762 L 470.676 337.762 L 470.676 321.328 L 487.211 321.328 L 487.211 337.762 L 501.785 337.762 L 501.785 275.535 L 485.848 275.535 C 467.055 275.535 455.648 291.512 455.648 307.445 M 487.211 308.473 L 470.809 308.473 L 470.809 302.777 C 470.809 294.992 478.074 289.82 485.848 289.82 C 486.305 289.82 486.766 289.844 487.211 289.859 Z M 600.52 285.859 L 600.453 285.582 C 597.703 276.145 591.457 275.57 580.281 275.535 L 565.676 275.535 L 565.676 337.762 L 580.281 337.762 L 580.281 290.102 C 585.293 289.055 592.422 290.824 592.422 302.352 L 592.422 337.762 L 607.836 337.762 L 607.836 302.352 C 607.836 290.824 614.961 289.055 619.957 290.102 L 619.957 337.762 L 634.547 337.762 L 634.547 275.535 L 619.957 275.535 C 608.801 275.57 603.281 276.305 600.52 285.859 M 894.664 275.535 C 877.387 275.535 863.348 289.922 863.348 307.676 C 863.348 325.402 877.387 339.801 894.664 339.801 C 911.973 339.801 926 325.402 926 307.676 C 926 289.922 911.973 275.535 894.664 275.535 M 894.664 323.742 C 886.188 323.742 879.32 316.551 879.32 307.676 C 879.32 298.773 886.188 291.582 894.664 291.582 C 903.16 291.582 910.043 298.773 910.043 307.676 C 910.043 316.551 903.16 323.742 894.664 323.742 M 829.051 275.535 C 828.172 275.535 827.289 275.57 826.434 275.656 L 826.434 275.535 L 811.844 275.535 L 811.844 337.762 L 826.434 337.66 C 827.289 337.719 828.172 337.762 829.051 337.762 C 845.98 337.762 859.711 323.824 859.711 306.648 C 859.711 289.48 845.98 275.535 829.051 275.535 M 829.051 323.379 C 828.152 323.379 827.285 323.312 826.434 323.172 L 826.434 290.145 C 827.285 289.996 828.152 289.941 829.051 289.941 C 838.285 289.941 845.773 297.41 845.773 306.648 C 845.773 315.887 838.285 323.379 829.051 323.379 M 775.133 275.535 C 757.848 275.535 743.812 289.922 743.812 307.676 C 743.812 325.402 757.848 339.801 775.133 339.801 C 792.414 339.801 806.449 325.402 806.449 307.676 C 806.449 289.922 792.414 275.535 775.133 275.535 M 775.133 323.742 C 766.621 323.742 759.758 316.551 759.758 307.676 C 759.758 298.773 766.621 291.582 775.133 291.582 C 783.605 291.582 790.504 298.773 790.504 307.676 C 790.504 316.551 783.605 323.742 775.133 323.742 M 746.73 275.535 L 695.461 275.535 L 695.461 288.754 L 714.656 288.754 L 714.656 337.762 L 729.227 337.762 L 729.227 288.754 L 746.73 288.754 Z M 645.184 307.445 L 645.184 337.762 L 660.215 337.762 L 660.215 321.328 L 676.742 321.328 L 676.742 337.762 L 691.336 337.762 L 691.336 275.535 L 675.375 275.535 C 656.594 275.535 645.184 291.512 645.184 307.445 M 676.742 308.473 L 660.348 308.473 L 660.348 302.777 C 660.348 294.992 667.598 289.82 675.375 289.82 C 675.848 289.82 676.297 289.844 676.742 289.859 Z M 676.742 308.473 "/></g></svg></span>
+    <div class="titles">
+      <div class="t1">Control de Traslados</div>
+      <div class="t2">Verificación de servicios &amp; inspección de vehículos</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="period">Semana analizada<b id="periodo">— cargar archivo —</b></div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="wrap">
+    <button data-tab="cargar" class="active">1 · Cargar y validar</button>
+    <button data-tab="dash">2 · Dashboard</button>
+    <button data-tab="check">3 · Checklist de vehículos</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- ============ TAB CARGAR ============ -->
+<section class="tab active" id="tab-cargar">
+  <div class="card">
+    <h3>Cargar archivos del proveedor</h3>
+    <p class="muted">Sube el/los <b>.xlsx tal cual los envía el proveedor</b>. La herramienta lee automáticamente las hojas de traslados (CENDIS, TRANSPORTE, VARIOS y por pasajero), ignora las hojas de plantilla y detecta si subes un archivo repetido. Todo se procesa en tu equipo; nada se sube a internet.</p>
+    <div class="drop" id="drop">
+      <div class="big">📄 Arrastra aquí los archivos o haz clic para elegir</div>
+      <div class="muted">Formato .xlsx · puedes cargar los dos proveedores a la vez</div>
+      <input type="file" id="fileinp" accept=".xlsx,.xls" multiple>
+    </div>
+    <div class="filelist" id="filelist"></div>
+    <div class="toolbar" style="margin-top:14px">
+      <button class="btn ghost sm" id="btnClear" disabled>Limpiar todo</button>
+      <span class="muted" id="loadmsg"></span>
+    </div>
+  </div>
+
+  <div id="valResults" style="display:none">
+    <div class="kpis" style="margin-bottom:18px">
+      <div class="kpi"><div class="lbl">Servicios cargados</div><div class="val" id="kTotal">0</div><div class="sub" id="kProvSub"></div></div>
+      <div class="kpi riesgo"><div class="lbl">Duplicados (rojo)</div><div class="val" id="kDup">0</div><div class="sub">Mismo pasajero + fecha + hora</div></div>
+      <div class="kpi alerta"><div class="lbl">Por revisar (amarillo)</div><div class="val" id="kWarn">0</div><div class="sub">Mismo día, otra hora</div></div>
+      <div class="kpi"><div class="lbl">Choque de chofer</div><div class="val" id="kClash">0</div><div class="sub">Mismo chofer y hora</div></div>
+    </div>
+
+    <div class="card">
+      <h3>🔴 Servicios duplicados — posible doble cobro</h3>
+      <p class="muted">Mismo pasajero, misma fecha y misma hora exacta aparece más de una vez. Revisa si el proveedor lo facturó dos veces.</p>
+      <div class="toolbar">
+        <button class="btn sm" id="btnExpDup">⬇ Exportar duplicados (CSV)</button>
+      </div>
+      <div id="dupTable"></div>
+    </div>
+
+    <div class="card">
+      <h3>🟡 Por revisar — mismo pasajero el mismo día</h3>
+      <p class="muted">Mismo pasajero y fecha pero a distinta hora. Puede ser ida y vuelta legítima; verifica antes de aprobar.</p>
+      <div id="warnTable"></div>
+    </div>
+
+    <div class="card">
+      <h3>⚠️ Choque de horario del chofer</h3>
+      <p class="muted">Un mismo chofer con dos servicios a la misma hora el mismo día (físicamente imposible). Información de apoyo.</p>
+      <div id="clashTable"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAB DASHBOARD ============ -->
+<section class="tab" id="tab-dash">
+  <div id="dashEmpty" class="card"><div class="empty">Carga primero un archivo en la pestaña <b>“Cargar y validar”</b> para ver el dashboard.</div></div>
+  <div id="dashContent" style="display:none">
+    <div class="card noprint">
+      <div class="toolbar" style="margin-bottom:0">
+        <label class="fld">Proveedor
+          <select id="fProv"><option value="">Todos</option></select>
+        </label>
+        <label class="fld">Área
+          <select id="fArea"><option value="">Todas</option></select>
+        </label>
+        <label class="fld">Excluir duplicados
+          <select id="fDedup"><option value="1">Sí (recomendado)</option><option value="0">No</option></select>
+        </label>
+        <div class="spacer" style="flex:1"></div>
+        <button class="btn ghost sm" id="btnPrintDash">🖨 Imprimir / PDF</button>
+      </div>
+    </div>
+
+    <div class="kpis" style="margin-bottom:18px">
+      <div class="kpi"><div class="lbl">Servicios</div><div class="val" id="dTotal">0</div></div>
+      <div class="kpi ok"><div class="lbl">Gasto total</div><div class="val" id="dGasto">$0</div></div>
+      <div class="kpi"><div class="lbl">Proveedores</div><div class="val" id="dProv">0</div></div>
+      <div class="kpi"><div class="lbl">Choferes</div><div class="val" id="dChof">0</div></div>
+      <div class="kpi"><div class="lbl">Rutas distintas</div><div class="val" id="dRutas">0</div></div>
+    </div>
+
+    <div class="grid2">
+      <div class="card"><h3>Servicios por proveedor</h3><div class="chartbox"><canvas id="cProvServ"></canvas></div></div>
+      <div class="card"><h3>Gasto por proveedor (US$) — quién cobra más</h3><div class="chartbox"><canvas id="cProvGasto"></canvas></div></div>
+    </div>
+
+    <div class="grid2">
+      <div class="card"><h3>Distribución por franja horaria</h3>
+        <div class="chartbox"><canvas id="cFranja"></canvas></div>
+        <div class="legendnote">
+          <span><i class="dot" style="background:var(--serie-2)"></i>Diurno 06:00–18:00</span>
+          <span><i class="dot" style="background:var(--serie-1)"></i>Nocturno 18:00–00:00</span>
+          <span><i class="dot" style="background:var(--serie-4)"></i>Extra 00:00–06:00</span>
+        </div>
+      </div>
+      <div class="card"><h3>Servicios por área</h3><div class="chartbox"><canvas id="cArea"></canvas></div></div>
+    </div>
+
+    <div class="card"><h3>Top choferes por nº de servicios</h3><div class="chartbox tall"><canvas id="cChof"></canvas></div></div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>Choferes que salen</h3>
+        <div class="tablewrap" style="max-height:380px"><table id="tChof"></table></div>
+      </div>
+      <div class="card">
+        <h3>Rutas por proveedor</h3>
+        <div class="toolbar"><input type="text" id="rutaSearch" placeholder="Buscar ruta / punto…" style="flex:1"></div>
+        <div class="tablewrap" style="max-height:340px"><table id="tRutas"></table></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAB CHECKLIST ============ -->
+<section class="tab" id="tab-check">
+  <div class="card">
+    <h3>Inspección de vehículo</h3>
+    <p class="muted">Llena el formato desde el teléfono, marca el estado de cada punto, recoge las tres firmas y genera el PDF.</p>
+    <div class="frm">
+      <label class="fld">Fecha<input type="date" id="ckFecha"></label>
+      <label class="fld">Proveedor / Contratista<input type="text" id="ckProv" placeholder="Ej. Confort Line"></label>
+      <label class="fld">Placa del vehículo<input type="text" id="ckPlaca" placeholder="Ej. AB123CD"></label>
+      <label class="fld">Marca / Modelo<input type="text" id="ckModelo" placeholder="Ej. Toyota Hiace"></label>
+      <label class="fld">Chofer<input type="text" id="ckChofer" placeholder="Nombre del chofer"></label>
+      <label class="fld">Kilometraje<input type="number" id="ckKm" placeholder="Km"></label>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Puntos de revisión</h3>
+    <div class="toolbar noprint"><button class="btn ghost sm" id="btnAddItem">＋ Agregar punto</button>
+      <span class="muted">Marca cada punto: <b>Bien</b> / <b>Regular</b> / <b>Malo</b> / <b>N/A</b></span></div>
+    <div id="ckItems"></div>
+    <div class="res-banner" id="resBanner"></div>
+  </div>
+
+  <div class="card">
+    <h3>Firmas</h3>
+    <div class="sigrow">
+      <div>
+        <label class="fld">Chofer<input type="text" id="sigName0" placeholder="Nombre y apellido"></label>
+        <canvas class="sigbox" data-sig="0"></canvas>
+        <div class="sigcap"><span class="muted">Firma del chofer</span><button class="btn ghost sm noprint" data-clear="0">Limpiar</button></div>
+      </div>
+      <div>
+        <label class="fld">Controlador de la contratista<input type="text" id="sigName1" placeholder="Nombre y apellido"></label>
+        <canvas class="sigbox" data-sig="1"></canvas>
+        <div class="sigcap"><span class="muted">Firma del controlador</span><button class="btn ghost sm noprint" data-clear="1">Limpiar</button></div>
+      </div>
+      <div>
+        <label class="fld">Inspector (Farmatodo)<input type="text" id="sigName2" placeholder="Nombre y apellido"></label>
+        <canvas class="sigbox" data-sig="2"></canvas>
+        <div class="sigcap"><span class="muted">Firma del inspector</span><button class="btn ghost sm noprint" data-clear="2">Limpiar</button></div>
+      </div>
+    </div>
+    <div class="toolbar" style="margin-top:16px">
+      <button class="btn" id="btnPdf">⬇ Generar PDF firmado</button>
+      <button class="btn ghost sm" id="btnCkReset">Vaciar formato</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>Farmatodo · uso interno — Control de Traslados · <span id="hoy"></span></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+"use strict";
+/* ============================================================
+   Control de Traslados Farmatodo — todo en el navegador
+   ============================================================ */
+const SERIE=['#001E62','#418FDE','#00A499','#470A68','#A8AD00','#6BA8E6','#221C35','#9BC4EF'];
+const $=(s,el=document)=>el.querySelector(s);
+const $$=(s,el=document)=>[...el.querySelectorAll(s)];
+const fmtMoney=n=>'$'+(Number(n)||0).toLocaleString('es-VE',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtNum=n=>(Number(n)||0).toLocaleString('es-VE');
+const norm=s=>(s==null?'':String(s)).trim().replace(/\s+/g,' ').toUpperCase();
+
+let FILES=[];        // {name,size,sig,rows}
+let ROWS=[];         // registros unificados
+let CHARTS={};
+
+/* ---------- Tabs ---------- */
+$$('nav.tabs button').forEach(b=>b.addEventListener('click',()=>{
+  $$('nav.tabs button').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  $$('section.tab').forEach(s=>s.classList.remove('active'));
+  $('#tab-'+b.dataset.tab).classList.add('active');
+}));
+
+/* ---------- Carga de archivos ---------- */
+const drop=$('#drop'), inp=$('#fileinp');
+drop.addEventListener('click',()=>inp.click());
+drop.addEventListener('dragover',e=>{e.preventDefault();drop.classList.add('over');});
+drop.addEventListener('dragleave',()=>drop.classList.remove('over'));
+drop.addEventListener('drop',e=>{e.preventDefault();drop.classList.remove('over');handleFiles(e.dataTransfer.files);});
+inp.addEventListener('change',e=>handleFiles(e.target.files));
+$('#btnClear').addEventListener('click',()=>{FILES=[];ROWS=[];renderFiles();processAll();inp.value='';});
+
+function handleFiles(fl){
+  const arr=[...fl].filter(f=>/\.x(ls|lsx)$/i.test(f.name));
+  if(!arr.length){$('#loadmsg').textContent='Solo se aceptan archivos .xlsx';return;}
+  let pending=arr.length;
+  arr.forEach(f=>{
+    const rd=new FileReader();
+    rd.onload=ev=>{
+      try{
+        const wb=XLSX.read(new Uint8Array(ev.target.result),{type:'array',cellDates:true});
+        const rows=parseWorkbook(wb,f.name);
+        const sig=f.name+'|'+f.size+'|'+rows.length;
+        const dupe=FILES.some(x=>x.sig===sig);
+        FILES.push({name:f.name,size:f.size,sig,rows,dupe,count:rows.length});
+      }catch(err){
+        FILES.push({name:f.name,size:f.size,sig:'err',rows:[],error:String(err.message||err),count:0});
+      }
+      if(--pending===0){renderFiles();processAll();}
+    };
+    rd.readAsArrayBuffer(f);
+  });
+}
+
+/* Detecta encabezado y extrae registros de todas las hojas de traslados */
+function parseWorkbook(wb,fname){
+  const out=[];
+  wb.SheetNames.forEach(sn=>{
+    const ws=wb.Sheets[sn];
+    const grid=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:null});
+    // localizar fila de encabezado
+    let hr=-1;
+    for(let i=0;i<Math.min(grid.length,12);i++){
+      const cells=(grid[i]||[]).map(norm);
+      if(cells.includes('PROVEEDOR')&&cells.includes('CHOFER')&&cells.includes('FECHA')){hr=i;break;}
+    }
+    if(hr<0)return; // hoja de plantilla, se ignora
+    const head=(grid[hr]||[]).map(norm);
+    const find=(...names)=>{for(const n of names){const k=head.indexOf(n);if(k>=0)return k;}return -1;};
+    const cP=find('PROVEEDOR'), cC=find('CHOFER'), cF=find('FECHA'), cH=find('HORA');
+    const cS=find('PUNTO DE SALIDA','SALIDA'); let cD=find('DESTINO'); if(cD<0)cD=cS+1;
+    const cPas=find('PASAJERO 1','PASAJERO  1','PASAJERO'); const cAc=find('ACOMPAÑANTES','ACOMPANANTES');
+    let cCost=find('COSTO TOTAL','COSTO'); const cArea=find('AREA','ÁREA');
+    const cTar=find('TARIFA BASE $','TARIFA BASE','TARIFA BASE+FERIADO DOMINGO');
+    for(let r=hr+1;r<grid.length;r++){
+      const row=grid[r]||[];
+      const prov=row[cP], fecha=row[cF];
+      if(prov==null||String(prov).trim()===''||fecha==null)continue; // fila vacía o de total
+      const rec={
+        proveedor:String(prov).trim(),
+        chofer:cC>=0&&row[cC]!=null?String(row[cC]).trim():'',
+        fecha:toDate(fecha),
+        hora:toTime(cH>=0?row[cH]:null),
+        salida:cS>=0&&row[cS]!=null?String(row[cS]).trim():'',
+        destino:cD>=0&&row[cD]!=null?String(row[cD]).trim():'',
+        pasajero:cPas>=0&&row[cPas]!=null?String(row[cPas]).trim():'',
+        acomp:cAc>=0&&row[cAc]!=null?String(row[cAc]).trim():'',
+        costo:num(cCost>=0?row[cCost]:(cTar>=0?row[cTar]:0)),
+        area:cArea>=0&&row[cArea]!=null?String(row[cArea]).trim():sn,
+        hoja:sn, archivo:fname
+      };
+      out.push(rec);
+    }
+  });
+  return out;
+}
+
+function num(v){if(v==null||v==='')return 0;if(typeof v==='number')return v;const n=parseFloat(String(v).replace(/[^0-9.,-]/g,'').replace(',','.'));return isNaN(n)?0:n;}
+function toDate(v){
+  if(v instanceof Date&&!isNaN(v))return `${v.getFullYear()}-${String(v.getMonth()+1).padStart(2,'0')}-${String(v.getDate()).padStart(2,'0')}`;
+  if(typeof v==='number'){const d=XLSX.SSF?XLSX.SSF.parse_date_code(v):null;if(d)return `${d.y}-${String(d.m).padStart(2,'0')}-${String(d.d).padStart(2,'0')}`;}
+  const s=String(v).trim();const m=s.match(/(\d{1,4})[\/\-](\d{1,2})[\/\-](\d{1,4})/);
+  if(m){let[_,a,b,c]=m;if(a.length===4)return `${a}-${b.padStart(2,'0')}-${c.padStart(2,'0')}`;return `${c}-${b.padStart(2,'0')}-${a.padStart(2,'0')}`;}
+  return s;
+}
+function toTime(v){
+  if(v==null||v==='')return '';
+  if(v instanceof Date&&!isNaN(v))return `${String(v.getHours()).padStart(2,'0')}:${String(v.getMinutes()).padStart(2,'0')}`;
+  if(typeof v==='number'){const t=Math.round(v*24*60);const h=Math.floor(t/60)%24;const mi=t%60;return `${String(h).padStart(2,'0')}:${String(mi).padStart(2,'0')}`;}
+  const s=String(v).trim();const m=s.match(/(\d{1,2}):(\d{2})/);if(m)return `${m[1].padStart(2,'0')}:${m[2]}`;
+  return s;
+}
+function horaH(t){const m=/^(\d{1,2}):/.exec(t||'');return m?parseInt(m[1],10):null;}
+function franja(t){const h=horaH(t);if(h==null)return 'Sin hora';if(h>=6&&h<18)return 'Diurno';if(h>=18&&h<24)return 'Nocturno';return 'Extra';}
+
+function renderFiles(){
+  const c=$('#filelist');c.innerHTML='';
+  FILES.forEach((f,i)=>{
+    const div=document.createElement('div');
+    div.className='fileitem'+(f.dupe?' dupe':'');
+    div.innerHTML=`<span class="nm">${f.name}</span>
+      <span class="meta">${(f.size/1024).toFixed(0)} KB · ${f.count} servicios</span>
+      ${f.error?`<span class="pill dupe">error</span>`:f.dupe?`<span class="pill dupe">⚠ archivo repetido</span>`:`<span class="pill ok">✓ cargado</span>`}
+      <span class="rmx" data-i="${i}" title="Quitar">✕</span>`;
+    c.appendChild(div);
+  });
+  $$('.rmx',c).forEach(x=>x.addEventListener('click',()=>{FILES.splice(+x.dataset.i,1);renderFiles();processAll();}));
+  $('#btnClear').disabled=!FILES.length;
+  const dupes=FILES.filter(f=>f.dupe).length;
+  $('#loadmsg').textContent=FILES.length?`${FILES.length} archivo(s)· ${dupes?dupes+' repetido(s) detectado(s)':'sin repetidos'}`:'';
+}
+
+/* ---------- Proceso principal ---------- */
+function processAll(){
+  ROWS=[];FILES.forEach(f=>{if(!f.dupe&&!f.error)ROWS.push(...f.rows);});
+  computeFlags();
+  renderValidation();
+  buildDashboard();
+}
+
+let DUP=[],WARN=[],CLASH=[];
+function computeFlags(){
+  ROWS.forEach(r=>{r._dup=false;r._warn=false;});
+  // duplicados: pasajero+fecha+hora
+  const g={};
+  ROWS.forEach((r,i)=>{if(!r.pasajero)return;const k=norm(r.pasajero)+'|'+r.fecha+'|'+r.hora;(g[k]=g[k]||[]).push(i);});
+  DUP=[];
+  Object.values(g).forEach(idx=>{if(idx.length>1){idx.forEach(i=>ROWS[i]._dup=true);DUP.push(idx.map(i=>ROWS[i]));}});
+  // por revisar: pasajero+fecha, distinta hora, no marcados como dup
+  const g2={};
+  ROWS.forEach((r,i)=>{if(!r.pasajero||r._dup)return;const k=norm(r.pasajero)+'|'+r.fecha;(g2[k]=g2[k]||[]).push(i);});
+  WARN=[];
+  Object.values(g2).forEach(idx=>{const horas=new Set(idx.map(i=>ROWS[i].hora));if(idx.length>1&&horas.size>1){idx.forEach(i=>ROWS[i]._warn=true);WARN.push(idx.map(i=>ROWS[i]));}});
+  // choque de chofer: chofer+fecha+hora con >1 registro
+  const g3={};
+  ROWS.forEach((r,i)=>{if(!r.chofer||!r.hora)return;const k=norm(r.chofer)+'|'+r.fecha+'|'+r.hora;(g3[k]=g3[k]||[]).push(i);});
+  CLASH=[];
+  Object.values(g3).forEach(idx=>{if(idx.length>1)CLASH.push(idx.map(i=>ROWS[i]));});
+}
+
+function renderValidation(){
+  const provs=[...new Set(ROWS.map(r=>r.proveedor))];
+  if(!ROWS.length){$('#valResults').style.display='none';$('#periodo').textContent='— cargar archivo —';return;}
+  $('#valResults').style.display='block';
+  $('#kTotal').textContent=fmtNum(ROWS.length);
+  $('#kProvSub').textContent=provs.length+' proveedor(es): '+provs.join(', ');
+  $('#kDup').textContent=DUP.reduce((a,g)=>a+g.length,0);
+  $('#kWarn').textContent=WARN.reduce((a,g)=>a+g.length,0);
+  $('#kClash').textContent=CLASH.reduce((a,g)=>a+g.length,0);
+  // periodo
+  const fechas=ROWS.map(r=>r.fecha).filter(Boolean).sort();
+  if(fechas.length)$('#periodo').textContent=fechas[0]+'  →  '+fechas[fechas.length-1];
+  renderGroupTable('#dupTable',DUP,'rojo');
+  renderGroupTable('#warnTable',WARN,'amarillo');
+  renderGroupTable('#clashTable',CLASH,'',true);
+}
+
+function renderGroupTable(sel,groups,cls,isClash){
+  const box=$(sel);
+  if(!groups.length){box.innerHTML='<div class="empty">✓ Sin coincidencias.</div>';return;}
+  let n=0;
+  let h='<div class="tablewrap"><table><thead><tr><th>#</th><th>Proveedor</th><th>Chofer</th><th>Fecha</th><th>Hora</th><th>Pasajero</th><th>Ruta</th><th class="num">Costo</th></tr></thead><tbody>';
+  groups.forEach((g,gi)=>{
+    g.forEach(r=>{
+      n++;
+      h+=`<tr class="${cls}"><td>${gi+1}</td><td>${r.proveedor}</td><td>${r.chofer||'—'}</td><td>${r.fecha}</td><td>${r.hora||'—'}</td><td>${r.pasajero||'—'}</td><td>${(r.salida||'')+(r.destino?' → '+r.destino:'')}</td><td class="num">${fmtMoney(r.costo)}</td></tr>`;
+    });
+  });
+  h+='</tbody></table></div>';
+  box.innerHTML=h;
+}
+
+$('#btnExpDup').addEventListener('click',()=>{
+  if(!DUP.length){alert('No hay duplicados que exportar.');return;}
+  let csv='Grupo,Proveedor,Chofer,Fecha,Hora,Pasajero,Salida,Destino,Costo\n';
+  DUP.forEach((g,gi)=>g.forEach(r=>{csv+=[gi+1,r.proveedor,r.chofer,r.fecha,r.hora,r.pasajero,r.salida,r.destino,r.costo].map(x=>`"${String(x==null?'':x).replace(/"/g,'""')}"`).join(',')+'\n';}));
+  const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='duplicados_traslados.csv';a.click();
+});
+
+/* ---------- Dashboard ---------- */
+function activeRows(){
+  const dedup=$('#fDedup').value==='1';
+  const prov=$('#fProv').value, area=$('#fArea').value;
+  return ROWS.filter(r=>(!dedup||!r._dup)&&(!prov||r.proveedor===prov)&&(!area||r.area===area));
+}
+function fillSelect(sel,vals){
+  const cur=sel.value;
+  sel.innerHTML='<option value="">'+(sel.id==='fProv'?'Todos':'Todas')+'</option>'+vals.map(v=>`<option>${v}</option>`).join('');
+  if(vals.includes(cur))sel.value=cur;
+}
+function buildDashboard(){
+  if(!ROWS.length){$('#dashEmpty').style.display='block';$('#dashContent').style.display='none';return;}
+  $('#dashEmpty').style.display='none';$('#dashContent').style.display='block';
+  fillSelect($('#fProv'),[...new Set(ROWS.map(r=>r.proveedor))].sort());
+  fillSelect($('#fArea'),[...new Set(ROWS.map(r=>r.area))].sort());
+  renderDash();
+}
+['fProv','fArea','fDedup'].forEach(id=>document.addEventListener('change',e=>{if(e.target.id===id)renderDash();}));
+$('#rutaSearch').addEventListener('input',renderRutas);
+$('#btnPrintDash').addEventListener('click',()=>window.print());
+
+function groupCount(rows,key){const m={};rows.forEach(r=>{const k=r[key]||'—';m[k]=(m[k]||0)+1;});return m;}
+function groupSum(rows,key,val){const m={};rows.forEach(r=>{const k=r[key]||'—';m[k]=(m[k]||0)+(r[val]||0);});return m;}
+function mkChart(id,cfg){if(CHARTS[id])CHARTS[id].destroy();CHARTS[id]=new Chart($('#'+id),cfg);}
+const baseOpts={responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{labels:{font:{family:'Helvetica'}}}}};
+
+function renderDash(){
+  const rows=activeRows();
+  $('#dTotal').textContent=fmtNum(rows.length);
+  $('#dGasto').textContent=fmtMoney(rows.reduce((a,r)=>a+r.costo,0));
+  $('#dProv').textContent=new Set(rows.map(r=>r.proveedor)).size;
+  $('#dChof').textContent=new Set(rows.map(r=>r.chofer).filter(Boolean)).size;
+  $('#dRutas').textContent=new Set(rows.map(r=>(r.salida||'')+'→'+(r.destino||''))).size;
+
+  // servicios por proveedor
+  const ps=groupCount(rows,'proveedor');
+  mkChart('cProvServ',{type:'bar',data:{labels:Object.keys(ps),datasets:[{data:Object.values(ps),backgroundColor:SERIE[1],borderRadius:5}]},
+    options:{...baseOpts,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+  // gasto por proveedor
+  const pg=groupSum(rows,'proveedor','costo');
+  mkChart('cProvGasto',{type:'bar',data:{labels:Object.keys(pg),datasets:[{data:Object.values(pg).map(v=>+v.toFixed(2)),backgroundColor:SERIE[0],borderRadius:5}]},
+    options:{...baseOpts,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fmtMoney(c.raw)}}},scales:{y:{beginAtZero:true,ticks:{callback:v=>'$'+v}}}}});
+  // franja
+  const fr={Diurno:0,Nocturno:0,Extra:0,'Sin hora':0};rows.forEach(r=>fr[franja(r.hora)]++);
+  const frLabels=Object.keys(fr).filter(k=>fr[k]>0);
+  mkChart('cFranja',{type:'doughnut',data:{labels:frLabels,datasets:[{data:frLabels.map(k=>fr[k]),
+    backgroundColor:frLabels.map(k=>({Diurno:SERIE[1],Nocturno:SERIE[0],Extra:SERIE[3],'Sin hora':'#9AA6B8'}[k]))}]},
+    options:{...baseOpts,cutout:'58%'}});
+  // area
+  const ar=groupCount(rows,'area');
+  mkChart('cArea',{type:'doughnut',data:{labels:Object.keys(ar),datasets:[{data:Object.values(ar),backgroundColor:SERIE}]},
+    options:{...baseOpts,cutout:'58%'}});
+  // top choferes
+  const ch=groupCount(rows,'chofer');
+  const top=Object.entries(ch).sort((a,b)=>b[1]-a[1]).slice(0,15);
+  mkChart('cChof',{type:'bar',data:{labels:top.map(x=>x[0]),datasets:[{data:top.map(x=>x[1]),backgroundColor:SERIE[2],borderRadius:5}]},
+    options:{...baseOpts,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true}}}});
+
+  renderChoferTable(rows);
+  renderRutas();
+}
+
+function renderChoferTable(rows){
+  const map={};
+  rows.forEach(r=>{const k=r.chofer||'—';const m=map[k]||(map[k]={serv:0,gasto:0,fr:{Diurno:0,Nocturno:0,Extra:0,'Sin hora':0},prov:new Set()});
+    m.serv++;m.gasto+=r.costo;m.fr[franja(r.hora)]++;m.prov.add(r.proveedor);});
+  const arr=Object.entries(map).sort((a,b)=>b[1].serv-a[1].serv);
+  let h='<thead><tr><th>Chofer</th><th>Proveedor</th><th class="num">Servicios</th><th class="num">Gasto</th><th>Franja predom.</th></tr></thead><tbody>';
+  arr.forEach(([nm,m])=>{const fr=Object.entries(m.fr).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1])[0];
+    h+=`<tr><td>${nm}</td><td>${[...m.prov].join(', ')}</td><td class="num">${m.serv}</td><td class="num">${fmtMoney(m.gasto)}</td><td>${fr?fr[0]:'—'}</td></tr>`;});
+  h+='</tbody>';$('#tChof').innerHTML=h;
+}
+function renderRutas(){
+  const rows=activeRows();const q=norm($('#rutaSearch').value);
+  const map={};
+  rows.forEach(r=>{const ruta=(r.salida||'—')+' → '+(r.destino||'—');const k=r.proveedor+'||'+ruta;
+    const m=map[k]||(map[k]={prov:r.proveedor,ruta,serv:0,gasto:0});m.serv++;m.gasto+=r.costo;});
+  let arr=Object.values(map).sort((a,b)=>b.serv-a.serv);
+  if(q)arr=arr.filter(m=>norm(m.ruta).includes(q)||norm(m.prov).includes(q));
+  let h='<thead><tr><th>Proveedor</th><th>Ruta (salida → destino)</th><th class="num">Servicios</th><th class="num">Gasto</th></tr></thead><tbody>';
+  arr.slice(0,300).forEach(m=>{h+=`<tr><td>${m.prov}</td><td style="white-space:normal">${m.ruta}</td><td class="num">${m.serv}</td><td class="num">${fmtMoney(m.gasto)}</td></tr>`;});
+  h+='</tbody>';$('#tRutas').innerHTML=h;
+}
+
+/* ---------- Checklist ---------- */
+const DEFAULT_ITEMS=['Nivel de combustible','Nivel de aceite de motor','Agua / refrigerante','Líquido de frenos',
+'Estado de los frenos','Cauchos (delanteros y traseros)','Caucho de repuesto','Luces (altas, bajas, freno, cruce)',
+'Limpiaparabrisas','Espejos','Asientos / tapicería','Cinturones de seguridad','Aire acondicionado',
+'Limpieza interior','Carrocería / latonería','Documentos (RCV, certificado)','Extintor','Gato, triángulo y llave de ruedas'];
+const ESTADOS=[['bien','Bien'],['regular','Regular'],['malo','Malo'],['na','N/A']];
+let itemCount=0;
+function addItem(name){
+  const id=itemCount++;const wrap=document.createElement('div');wrap.className='chk-item';wrap.dataset.id=id;
+  wrap.innerHTML=`<div class="nm"><input type="text" value="${(name||'').replace(/"/g,'&quot;')}" placeholder="Punto a revisar" style="width:100%;border:0;border-bottom:1px solid var(--gris-200);font-weight:600;padding:4px 0"></div>
+    <div class="opts">${ESTADOS.map(([v,l])=>`<span class="opt ${v}"><input type="radio" name="st${id}" id="st${id}_${v}" value="${v}"><label for="st${id}_${v}">${l}</label></span>`).join('')}
+      <span class="rmx noprint" title="Quitar">✕</span></div>
+    <div class="obs"><input type="text" placeholder="Observación (opcional)"></div>`;
+  wrap.querySelector('.rmx').addEventListener('click',()=>{wrap.remove();updateResult();});
+  wrap.addEventListener('change',updateResult);
+  $('#ckItems').appendChild(wrap);
+}
+function updateResult(){
+  const items=$$('#ckItems .chk-item');
+  let malo=0,regular=0,marcados=0;
+  items.forEach(it=>{const sel=it.querySelector('input[type=radio]:checked');if(sel){marcados++;if(sel.value==='malo')malo++;if(sel.value==='regular')regular++;}});
+  const b=$('#resBanner');b.className='res-banner';
+  if(!marcados){b.style.display='none';return;}
+  if(malo){b.classList.add('rechazo');b.textContent=`✖ RECHAZADO — ${malo} punto(s) en mal estado. No debe salir sin corregir.`;}
+  else if(regular){b.classList.add('obs');b.textContent=`⚠ APROBADO CON OBSERVACIONES — ${regular} punto(s) en estado regular.`;}
+  else{b.classList.add('ok');b.textContent='✓ APROBADO — todos los puntos revisados en buen estado.';}
+}
+DEFAULT_ITEMS.forEach(addItem);updateResult();
+$('#btnAddItem').addEventListener('click',()=>addItem(''));
+$('#ckFecha').value=new Date().toISOString().slice(0,10);
+
+/* Firmas (canvas, touch + mouse) */
+const pads=[];
+$$('.sigbox').forEach(cv=>{
+  const ctx=cv.getContext('2d');let drawing=false,last=null,dirty=false;
+  function resize(){const r=cv.getBoundingClientRect();const dpr=window.devicePixelRatio||1;
+    const img=cv.toDataURL();cv.width=r.width*dpr;cv.height=r.height*dpr;ctx.scale(dpr,dpr);
+    ctx.lineWidth=2;ctx.lineCap='round';ctx.strokeStyle='#001E62';
+    if(dirty){const im=new Image();im.onload=()=>ctx.drawImage(im,0,0,r.width,r.height);im.src=img;}}
+  setTimeout(resize,60);window.addEventListener('resize',()=>setTimeout(resize,60));
+  function pos(e){const r=cv.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top};}
+  function start(e){e.preventDefault();drawing=true;last=pos(e);}
+  function move(e){if(!drawing)return;e.preventDefault();const p=pos(e);ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();last=p;dirty=true;}
+  function end(){drawing=false;}
+  cv.addEventListener('mousedown',start);cv.addEventListener('mousemove',move);window.addEventListener('mouseup',end);
+  cv.addEventListener('touchstart',start,{passive:false});cv.addEventListener('touchmove',move,{passive:false});cv.addEventListener('touchend',end);
+  pads[+cv.dataset.sig]={cv,clear:()=>{ctx.clearRect(0,0,cv.width,cv.height);dirty=false;},isDirty:()=>dirty};
+});
+$$('[data-clear]').forEach(b=>b.addEventListener('click',()=>pads[+b.dataset.clear].clear()));
+
+$('#btnCkReset').addEventListener('click',()=>{
+  if(!confirm('¿Vaciar todo el formato de inspección?'))return;
+  ['ckProv','ckPlaca','ckModelo','ckChofer','ckKm','sigName0','sigName1','sigName2'].forEach(id=>$('#'+id).value='');
+  $('#ckItems').innerHTML='';itemCount=0;DEFAULT_ITEMS.forEach(addItem);pads.forEach(p=>p.clear());updateResult();
+});
+
+/* PDF */
+$('#btnPdf').addEventListener('click',()=>{
+  const {jsPDF}=window.jspdf;const doc=new jsPDF({unit:'mm',format:'a4'});
+  const W=210;let y=14;
+  doc.setFillColor(0,30,98);doc.rect(0,0,W,20,'F');
+  doc.setTextColor(255);doc.setFont('helvetica','bold');doc.setFontSize(14);doc.text('FARMATODO · Inspección de Vehículo',12,13);
+  doc.setTextColor(30);y=28;
+  doc.setFontSize(10);doc.setFont('helvetica','normal');
+  const info=[['Fecha',$('#ckFecha').value],['Proveedor',$('#ckProv').value],['Placa',$('#ckPlaca').value],
+    ['Marca/Modelo',$('#ckModelo').value],['Chofer',$('#ckChofer').value],['Kilometraje',$('#ckKm').value]];
+  info.forEach((it,i)=>{const x=12+(i%2)*99;const yy=y+Math.floor(i/2)*7;
+    doc.setFont('helvetica','bold');doc.text(it[0]+':',x,yy);doc.setFont('helvetica','normal');doc.text(String(it[1]||'—'),x+30,yy);});
+  y+=Math.ceil(info.length/2)*7+4;
+  doc.setDrawColor(200);doc.line(12,y,W-12,y);y+=6;
+  doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text('Puntos de revisión',12,y);y+=6;
+  doc.setFontSize(9);
+  $$('#ckItems .chk-item').forEach(it=>{
+    const nm=it.querySelector('input[type=text]').value||'';const sel=it.querySelector('input[type=radio]:checked');
+    const est=sel?ESTADOS.find(e=>e[0]===sel.value)[1]:'—';const obs=it.querySelector('.obs input').value||'';
+    if(y>250){doc.addPage();y=18;}
+    const col={Bien:[0,164,153],Regular:[168,173,0],Malo:[200,16,46]}[est]||[100,100,100];
+    doc.setFont('helvetica','normal');doc.setTextColor(30);doc.text('• '+nm,14,y);
+    doc.setFont('helvetica','bold');doc.setTextColor(...col);doc.text(est,150,y);
+    doc.setTextColor(120);doc.setFont('helvetica','italic');if(obs)doc.text(doc.splitTextToSize(obs,40),168,y);
+    y+=6;
+  });
+  doc.setTextColor(30);y+=2;
+  const items=$$('#ckItems .chk-item');let malo=0,reg=0;items.forEach(it=>{const s=it.querySelector('input[type=radio]:checked');if(s){if(s.value==='malo')malo++;if(s.value==='regular')reg++;}});
+  const res=malo?['RECHAZADO',[200,16,46]]:reg?['APROBADO CON OBSERVACIONES',[168,173,0]]:['APROBADO',[0,164,153]];
+  if(y>250){doc.addPage();y=18;}
+  doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(...res[1]);doc.text('Resultado: '+res[0],12,y);y+=10;
+  // firmas
+  doc.setTextColor(30);
+  const labels=['Chofer','Controlador contratista','Inspector (Farmatodo)'];
+  if(y>230){doc.addPage();y=20;}
+  const sw=58,sh=26,gap=6;
+  pads.forEach((p,i)=>{const x=12+i*(sw+gap);
+    try{const data=p.cv.toDataURL('image/png');if(p.isDirty())doc.addImage(data,'PNG',x,y,sw,sh);}catch(e){}
+    doc.setDrawColor(150);doc.line(x,y+sh,x+sw,y+sh);
+    doc.setFont('helvetica','bold');doc.setFontSize(8);doc.text(labels[i],x,y+sh+5);
+    doc.setFont('helvetica','normal');doc.text($('#sigName'+i).value||'',x,y+sh+9);});
+  y+=sh+16;
+  doc.setFontSize(7);doc.setTextColor(140);doc.text('Farmatodo · uso interno · generado '+new Date().toLocaleString('es-VE'),12,288);
+  const placa=($('#ckPlaca').value||'vehiculo').replace(/\s+/g,'_');
+  doc.save('inspeccion_'+placa+'_'+$('#ckFecha').value+'.pdf');
+});
+
+$('#hoy').textContent=new Date().toLocaleDateString('es-VE',{day:'2-digit',month:'long',year:'numeric'});
+</script>
+</body>
+</html>
