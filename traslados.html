@@ -172,7 +172,7 @@ footer{border-top:1px solid var(--gris-200);padding:18px 0;color:var(--gris-500)
 <section class="tab active" id="tab-cargar">
   <div class="card">
     <h3><span class="htitle">Cargar archivos del proveedor</span></h3>
-    <p class="muted">Sube el/los <b>.xlsx tal cual los envía el proveedor</b>. Reconoce el formato de <b>ambos proveedores</b> automáticamente (con o sin columna PROVEEDOR, "ORIGEN" o "PUNTO DE SALIDA"), ignora plantillas y hojas consolidadas repetidas, y detecta archivos repetidos. Si un archivo no trae el nombre del proveedor, lo toma del nombre del archivo y puedes corregirlo en el campo <b>Proveedor</b>. El análisis corre en tu equipo.</p>
+    <p class="muted">Sube el/los <b>.xlsx tal cual los envía el proveedor</b>. Reconoce el formato de <b>ambos proveedores</b> automáticamente (con o sin columna PROVEEDOR, "ORIGEN" o "PUNTO DE SALIDA"), ignora plantillas y hojas consolidadas repetidas, y detecta archivos repetidos. Cada archivo cargado muestra un selector <b>Proveedor: Confort Line / Douvancar</b> para unificar el nombre del proveedor aunque el Excel original no lo traiga o lo escriba distinto — así ambos quedan con el mismo formato antes de validar. Si el proveedor no coincide con ninguno de los dos, verás ⚠ y podrás escribirlo manualmente. El análisis corre en tu equipo.</p>
     <div class="drop" id="drop">
       <div class="big">📄 Arrastra aquí los archivos o haz clic para elegir</div>
       <div class="muted">Formato .xlsx · puedes cargar los dos proveedores a la vez</div>
@@ -394,7 +394,7 @@ function handleFiles(fl){
     rd.onload=ev=>{
       try{const wb=XLSX.read(new Uint8Array(ev.target.result),{type:'array',cellDates:true});
         const rows=parseWorkbook(wb,f.name);const s=f.name+'|'+f.size+'|'+rows.length;
-        FILES.push({name:f.name,size:f.size,sig:s,rows,dupe:FILES.some(x=>x.sig===s),count:rows.length,prov:modeProv(rows)});
+        FILES.push({name:f.name,size:f.size,sig:s,rows,dupe:FILES.some(x=>x.sig===s),count:rows.length,prov:modeProv(rows),guess:rows.length>0&&rows.every(r=>r.provGuess)});
       }catch(err){FILES.push({name:f.name,size:f.size,sig:'err',rows:[],error:String(err.message||err),count:0});}
       if(--pending===0){renderFiles();processAll();}
     };rd.readAsArrayBuffer(f);});
@@ -403,6 +403,16 @@ function providerFromName(fname){
   const s=(fname||'').replace(/\.[^.]+$/,'');
   const m=s.match(/[A-Za-zÁÉÍÓÚÑ][A-Za-zÁÉÍÓÚÑ&.\-]*/);
   return m?m[0].toUpperCase():'PROVEEDOR';
+}
+// Normaliza el nombre del proveedor a uno de los dos formatos oficiales (Confort Line / Douvancar)
+// aunque el Excel lo escriba distinto (con C.A., mayúsculas/minúsculas, etc.). Devuelve null si no
+// coincide con ninguno de los dos, para no forzar un nombre incorrecto.
+function canonProv(raw){
+  const t=norm(raw);
+  if(!t)return null;
+  if(t.indexOf('CONFORT')>=0)return 'CONFORT LINE';
+  if(t.indexOf('DOUVANCAR')>=0)return 'DOUVANCAR';
+  return null;
 }
 function modeProv(rows){const m={};rows.forEach(r=>{m[r.proveedor]=(m[r.proveedor]||0)+1;});const e=Object.entries(m).sort((a,b)=>b[1]-a[1])[0];return e?e[0]:'PROVEEDOR';}
 // Lee las hojas de traslados de CUALQUIER proveedor. Detecta el encabezado por CHOFER+FECHA
@@ -421,10 +431,18 @@ function parseWorkbook(wb,fname){
     const cP=find('PROVEEDOR'),cC=find('CHOFER'),cF=find('FECHA'),cH=find('HORA'),cS=find('PUNTO DE SALIDA','SALIDA','ORIGEN');
     let cD=find('DESTINO');if(cD<0)cD=cS+1;
     const cPas=find('PASAJERO 1','PASAJERO  1','PASAJERO'),cAc=find('ACOMPAÑANTES','ACOMPANANTES'),cCost=find('COSTO TOTAL','COSTO'),cArea=find('AREA','ÁREA'),cTar=find('TARIFA BASE $','TARIFA BASE');
+    // Firma de columnas de Douvancar: reportan ORIGEN/DESTINO con los recargos desglosados
+    // (RECARGO NOCTURNO, FERIADO-DOMINGO, DESVIO) y una columna COORDINACIÓN que Confort Line no usa.
+    // Sirve para reconocer el archivo aunque venga sin la columna PROVEEDOR rellena por fila.
+    const esFirmaDouvancar=head.some(x=>x.indexOf('COORDINACI')>=0)||(find('RECARGO NOCTURNO')>=0&&find('DESVIO')>=0); // 'COORDINACI' evita fallar por el acento de COORDINACIÓN
     for(let r=hr+1;r<grid.length;r++){const row=grid[r]||[];const chof=cC>=0?row[cC]:null,fecha=cF>=0?row[cF]:null;
       if(chof==null||String(chof).trim()===''||fecha==null)continue;
-      const prov=(cP>=0&&row[cP]!=null&&String(row[cP]).trim()!=='')?String(row[cP]).trim():defProv;
-      const rec={proveedor:prov,chofer:String(chof).trim(),fecha:toDate(fecha),hora:toTime(cH>=0?row[cH]:null),
+      const rawProv=(cP>=0&&row[cP]!=null&&String(row[cP]).trim()!=='')?String(row[cP]).trim():'';
+      let prov,provGuess=false;
+      if(rawProv){prov=canonProv(rawProv)||rawProv;}
+      else if(esFirmaDouvancar){prov='DOUVANCAR';}
+      else{prov=canonProv(defProv)||defProv;provGuess=true;}
+      const rec={proveedor:prov,provGuess,chofer:String(chof).trim(),fecha:toDate(fecha),hora:toTime(cH>=0?row[cH]:null),
         salida:cS>=0&&row[cS]!=null?String(row[cS]).trim():'',destino:cD>=0&&row[cD]!=null?String(row[cD]).trim():'',
         pasajero:cPas>=0&&row[cPas]!=null?String(row[cPas]).trim():'',acomp:cAc>=0&&row[cAc]!=null?String(row[cAc]).trim():'',
         costo:num(cCost>=0?row[cCost]:(cTar>=0?row[cTar]:0)),area:cArea>=0&&row[cArea]!=null?String(row[cArea]).trim():sn,hoja:sn,archivo:fname};
@@ -437,12 +455,26 @@ function parseWorkbook(wb,fname){
 }
 function renderFiles(){
   const c=$('#filelist');c.innerHTML='';
+  const PROV_CANON=['CONFORT LINE','DOUVANCAR'];
   FILES.forEach((f,i)=>{const div=document.createElement('div');div.className='fileitem'+(f.dupe?' dupe':'');
-    const provField=(f.error||f.count===0)?'':`<label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--gris-600);font-weight:600;margin:0">Proveedor:<input class="provinp" data-i="${i}" value="${(f.prov||'').replace(/"/g,'&quot;')}" title="Puedes corregir el nombre del proveedor" style="padding:4px 8px;font-size:12.5px;width:130px;border:1px solid var(--gris-300);border-radius:6px"></label>`;
+    const curProv=(f.prov||'').toUpperCase();const esConocido=PROV_CANON.includes(curProv);
+    const provField=(f.error||f.count===0)?'':`<label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--gris-600);font-weight:600;margin:0">Proveedor:
+      <select class="provsel" data-i="${i}" title="Unifica el formato: fuerza el nombre oficial del proveedor" style="padding:4px 8px;font-size:12.5px;border:1px solid var(--gris-300);border-radius:6px">
+        ${PROV_CANON.map(p=>`<option value="${p}" ${curProv===p?'selected':''}>${p}</option>`).join('')}
+        <option value="__otro" ${esConocido?'':'selected'}>Otro…</option>
+      </select>
+      <input class="provinp" data-i="${i}" value="${(f.prov||'').replace(/"/g,'&quot;')}" placeholder="Nombre del proveedor" style="display:${esConocido?'none':'inline-block'};padding:4px 8px;font-size:12.5px;width:130px;border:1px solid var(--gris-300);border-radius:6px">
+      </label>${f.guess?`<span class="pill dupe" title="No se pudo detectar el proveedor automáticamente; revisa el nombre">⚠ revisar proveedor</span>`:''}`;
     div.innerHTML=`<span class="nm">${f.name}</span>${provField}<span class="meta">${(f.size/1024).toFixed(0)} KB · ${f.count} servicios</span>${f.error?`<span class="pill dupe">error</span>`:f.dupe?`<span class="pill dupe">⚠ archivo repetido</span>`:f.count===0?`<span class="pill dupe">0 servicios — revisar formato</span>`:`<span class="pill ok">✓ cargado</span>`}<span class="rmx" data-i="${i}">✕</span>`;
     c.appendChild(div);});
   $$('.rmx',c).forEach(x=>x.addEventListener('click',()=>{FILES.splice(+x.dataset.i,1);renderFiles();processAll();}));
-  $$('.provinp',c).forEach(x=>x.addEventListener('change',()=>{const i=+x.dataset.i;const nv=x.value.trim()||'PROVEEDOR';FILES[i].prov=nv;FILES[i].rows.forEach(r=>r.proveedor=nv);processAll();}));
+  $$('.provsel',c).forEach(x=>x.addEventListener('change',()=>{
+    const i=+x.dataset.i;const inp=c.querySelector(`.provinp[data-i="${i}"]`);
+    if(x.value==='__otro'){if(inp){inp.style.display='inline-block';inp.focus();}return;}
+    if(inp)inp.style.display='none';
+    FILES[i].prov=x.value;FILES[i].guess=false;FILES[i].rows.forEach(r=>{r.proveedor=x.value;r.provGuess=false;});processAll();
+  }));
+  $$('.provinp',c).forEach(x=>x.addEventListener('change',()=>{const i=+x.dataset.i;const nv=x.value.trim()||'PROVEEDOR';FILES[i].prov=nv;FILES[i].guess=false;FILES[i].rows.forEach(r=>{r.proveedor=nv;r.provGuess=false;});processAll();}));
   $('#btnClear').disabled=!FILES.length;$('#btnSaveHist').disabled=!ROWS.length;
   const d=FILES.filter(f=>f.dupe).length;
   $('#loadmsg').textContent=FILES.length?`${FILES.length} archivo(s) · ${d?d+' repetido(s)':'sin repetidos'}`:'';
@@ -760,17 +792,31 @@ $('#btnSaveHist').addEventListener('click',async()=>{
 $('#hoy').textContent=new Date().toLocaleDateString('es-VE',{day:'2-digit',month:'long',year:'numeric'});
 </script>
 
-<!-- ══ FIREBASE SDK (proyecto compartido Farmatodo) ══ -->
+<!-- ══ FIREBASE SDK (proyecto propio de Andreina — histórico independiente) ══
+     Este proyecto de Firebase es DISTINTO al original ("cendis-noc26"), para que el histórico
+     semanal que se guarde aquí no se mezcle con el de la copia de Jesús Vieira.
+     Pasos para completar esto (una sola vez):
+       1. Entra a https://console.firebase.google.com con tu cuenta.
+       2. "Agregar proyecto" → nómbralo (ej. "control-traslados-cendis") → crea el proyecto.
+       3. Dentro del proyecto: Compilación → Firestore Database → Crear base de datos → modo producción
+          (las reglas por defecto quedan cerradas; para que la app pueda leer/guardar sin login,
+          ve a la pestaña "Reglas" y usa temporalmente allow read, write: if true; — ver nota de
+          seguridad más abajo, el Fase 3 del proyecto es justo restringir esto).
+       4. Configuración del proyecto (ícono ⚙) → "Tus apps" → ícono </> (Web) → registra una app
+          (no necesitas Hosting) → copia el objeto firebaseConfig que te muestra.
+       5. Reemplaza los 6 valores de abajo por los que te dio Firebase. Guarda el archivo y súbelo
+          a tu propio repositorio de GitHub (ver instrucciones del fork).
+  ══ -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
   import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
   const firebaseConfig = {
-    apiKey: "AIzaSyCrFXzXL1hoDYRrmXwILK4sSanJ28acOxA",
-    authDomain: "cendis-noc26.firebaseapp.com",
-    projectId: "cendis-noc26",
-    storageBucket: "cendis-noc26.firebasestorage.app",
-    messagingSenderId: "154600562289",
-    appId: "1:154600562289:web:0fcbfa4f1adcb4e2f805d0"
+    apiKey: "AIzaSyATnpymLPT0bVtgIEkTSuB3ou6ZxezH5a8",
+    authDomain: "control-traslados-cendis.firebaseapp.com",
+    projectId: "control-traslados-cendis",
+    storageBucket: "control-traslados-cendis.firebasestorage.app",
+    messagingSenderId: "59338013214",
+    appId: "1:59338013214:web:b8289d277ce3aa82010c0f"
   };
   try{
     const fbApp = initializeApp(firebaseConfig);
