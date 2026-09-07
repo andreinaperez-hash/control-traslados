@@ -231,6 +231,10 @@ footer{border-top:1px solid var(--gris-200);padding:18px 0;color:var(--gris-500)
         <div class="legendnote"><span><i class="dot" style="background:#418FDE"></i>Diurno 06–18</span><span><i class="dot" style="background:#001E62"></i>Nocturno 18–00</span><span><i class="dot" style="background:#470A68"></i>Extra 00–06</span></div></div>
       <div class="card"><h3><span class="htitle">Servicios por área</span><button class="pngbtn" data-png="cArea">⬇ PNG</button></h3><div class="chartbox"><canvas id="cArea"></canvas></div></div>
     </div>
+    <div class="card">
+      <h3><span class="htitle">Consolidado por proveedor y área</span><button class="btn sm" id="btnExpProvArea">⬇ CSV</button></h3>
+      <div class="tablewrap"><table id="tProvArea"></table></div>
+    </div>
     <div class="card"><h3><span class="htitle">Top choferes por nº de servicios</span><button class="pngbtn" data-png="cChof">⬇ PNG</button></h3><div class="chartbox tall"><canvas id="cChof"></canvas></div></div>
 
     <h2 style="margin:26px 0 6px">Comparativos históricos</h2>
@@ -414,6 +418,16 @@ function canonProv(raw){
   if(t.indexOf('DOUVANCAR')>=0)return 'DOUVANCAR';
   return null;
 }
+// Unifica el área (evita que "CENDIS" y "Cendis" salgan como categorías distintas en gráficas y tablas)
+function canonArea(raw){
+  const t=norm(raw);
+  if(!t)return t;
+  const hasC=t.indexOf('CENDIS')>=0, hasT=t.indexOf('TRANSPORTE')>=0;
+  if(hasC&&hasT)return 'CENDIS / TRANSPORTE';
+  if(hasC)return 'CENDIS';
+  if(hasT)return 'TRANSPORTE';
+  return t;
+}
 function modeProv(rows){const m={};rows.forEach(r=>{m[r.proveedor]=(m[r.proveedor]||0)+1;});const e=Object.entries(m).sort((a,b)=>b[1]-a[1])[0];return e?e[0]:'PROVEEDOR';}
 // Lee las hojas de traslados de CUALQUIER proveedor. Detecta el encabezado por CHOFER+FECHA
 // (no exige PROVEEDOR), mapea columnas por nombre con alias (ORIGEN=SALIDA, etc.), deriva el
@@ -445,7 +459,7 @@ function parseWorkbook(wb,fname){
       const rec={proveedor:prov,provGuess,chofer:String(chof).trim(),fecha:toDate(fecha),hora:toTime(cH>=0?row[cH]:null),
         salida:cS>=0&&row[cS]!=null?String(row[cS]).trim():'',destino:cD>=0&&row[cD]!=null?String(row[cD]).trim():'',
         pasajero:cPas>=0&&row[cPas]!=null?String(row[cPas]).trim():'',acomp:cAc>=0&&row[cAc]!=null?String(row[cAc]).trim():'',
-        costo:num(cCost>=0?row[cCost]:(cTar>=0?row[cTar]:0)),area:cArea>=0&&row[cArea]!=null?String(row[cArea]).trim():sn,hoja:sn,archivo:fname};
+        costo:num(cCost>=0?row[cCost]:(cTar>=0?row[cTar]:0)),area:canonArea(cArea>=0&&row[cArea]!=null&&String(row[cArea]).trim()!==''?String(row[cArea]).trim():sn),hoja:sn,archivo:fname};
       const s=sig(rec);
       if(seen[s]!==undefined&&seen[s]!==sn)continue; // mismo servicio repetido en otra hoja del mismo archivo (hoja consolidada)
       seen[s]=sn;out.push(rec);
@@ -564,10 +578,37 @@ function renderDash(){
   mkChart('cFranja',{type:'doughnut',data:{labels:fl,datasets:[{data:fl.map(k=>fr[k]),backgroundColor:fl.map(k=>({Diurno:SERIE[1],Nocturno:SERIE[0],Extra:SERIE[3],'Sin hora':'#9AA6B8'}[k]))}]},options:{...baseOpts,cutout:'58%'}});
   const ar=groupCount(rows,'area');
   mkChart('cArea',{type:'doughnut',data:{labels:Object.keys(ar),datasets:[{data:Object.values(ar),backgroundColor:SERIE}]},options:{...baseOpts,cutout:'58%'}});
+  renderProvArea(rows);
   const ch=groupCount(rows,'chofer'),top=Object.entries(ch).sort((a,b)=>b[1]-a[1]).slice(0,15);
   mkChart('cChof',{type:'bar',data:{labels:top.map(x=>x[0]),datasets:[{data:top.map(x=>x[1]),backgroundColor:SERIE[2],borderRadius:5}]},options:{...baseOpts,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true}}}});
   renderLineMonth();renderComp();
 }
+const AREAS_CONSOL=['CENDIS','TRANSPORTE','CENDIS / TRANSPORTE'];
+function provAreaMatrix(rows){
+  const provs=[...new Set(rows.map(r=>r.proveedor))].sort();
+  const extra=[...new Set(rows.map(r=>r.area).filter(a=>!AREAS_CONSOL.includes(a)))].sort();
+  const cols=[...AREAS_CONSOL,...extra];
+  const m={};rows.forEach(r=>{const p=r.proveedor;m[p]=m[p]||{};m[p][r.area]=(m[p][r.area]||0)+1;});
+  return {provs,cols,m};
+}
+function renderProvArea(rows){
+  const {provs,cols,m}=provAreaMatrix(rows);
+  if(!provs.length){$('#tProvArea').innerHTML='<tbody><tr><td class="empty">Sin datos.</td></tr></tbody>';return;}
+  let h='<thead><tr><th>Proveedor</th>'+cols.map(c=>`<th class="num">${c}</th>`).join('')+'<th class="num">Total</th></tr></thead><tbody>';
+  provs.forEach(p=>{const row=m[p]||{};const tot=cols.reduce((s,c)=>s+(row[c]||0),0);
+    h+=`<tr><td>${p}</td>`+cols.map(c=>`<td class="num">${row[c]||0}</td>`).join('')+`<td class="num">${tot}</td></tr>`;});
+  const totCols=cols.map(c=>rows.filter(r=>r.area===c).length);
+  h+=`<tr style="font-weight:700;background:var(--gris-100)"><td>Total</td>`+totCols.map(v=>`<td class="num">${v}</td>`).join('')+`<td class="num">${rows.length}</td></tr>`;
+  $('#tProvArea').innerHTML=h+'</tbody>';
+}
+$('#btnExpProvArea').addEventListener('click',()=>{
+  const rows=activeRows();if(!rows.length){alert('No hay datos para exportar.');return;}
+  const {provs,cols,m}=provAreaMatrix(rows);
+  let csv='Proveedor,'+cols.join(',')+',Total\n';
+  provs.forEach(p=>{const row=m[p]||{};const tot=cols.reduce((s,c)=>s+(row[c]||0),0);
+    csv+=[p,...cols.map(c=>row[c]||0),tot].map(x=>`"${String(x).replace(/"/g,'""')}"`).join(',')+'\n';});
+  dl(new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'}),'consolidado_proveedor_area.csv');
+});
 function monthlySeries(rows){
   const serv={},gasto={};rows.forEach(r=>{const k=mesKey(r.fecha);if(k==='sin-fecha')return;serv[k]=(serv[k]||0)+1;gasto[k]=(gasto[k]||0)+r.costo;});
   const keys=Object.keys(serv).sort();return {keys,serv,gasto};
