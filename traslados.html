@@ -794,7 +794,7 @@ async function loadHistory(){
   if(typeof window.fbLoad!=='function')return;
   const idx=await window.fbLoad(HCOL,'_index');const meses=(idx&&idx.meses)||[];
   const all=[];
-  for(const mk of meses){const arr=await window.fbLoad(HCOL,mk);if(Array.isArray(arr))arr.forEach(r=>all.push(r));}
+  for(const mk of meses){const arr=await window.fbLoad(HCOL,mk);if(Array.isArray(arr))arr.forEach(r=>{r.area=canonArea(r.area);all.push(r);});}
   HIST=all;_lastHL=Date.now();rebuildAll();
   const txt=document.getElementById('fb-txt');if(txt)txt.textContent='☁ En línea · '+new Date().toLocaleTimeString('es-VE',{hour:'2-digit',minute:'2-digit'});
 }
